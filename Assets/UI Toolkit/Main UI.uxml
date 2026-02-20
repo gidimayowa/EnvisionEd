@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Label text="Main Menu" style="-unity-text-align: middle-center; font-size: 50px; text-overflow: clip;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; font-size: 37px;">
+        <ui:Button text="Teacher&#10;" style="width: 270px; left: 76px; align-items: stretch; top: 0; position: absolute;" />
+        <ui:Button text="Student" style="width: 270px; right: 0; top: 0; position: absolute; left: 357px;" />
+    </ui:VisualElement>
+</ui:UXML>
