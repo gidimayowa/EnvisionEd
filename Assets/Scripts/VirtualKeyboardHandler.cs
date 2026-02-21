@@ -8,6 +8,7 @@ public class VirtualKeyboardHandler : MonoBehaviour
     [Header("References")]
     [SerializeField] private NonNativeKeyboard keyboard;
     [SerializeField] private TMP_InputField separateInputField;
+    public TMP_InputField CurrentTarget => separateInputField;
 
     private bool isTextSubmitted;
 
@@ -61,5 +62,18 @@ public class VirtualKeyboardHandler : MonoBehaviour
     public void ResetSubmitState()
     {
         isTextSubmitted = false;
+    }
+
+    public void SetTargetInputField(TMP_InputField target)
+    {
+        separateInputField = target;
+
+        if (separateInputField != null)
+        {
+            separateInputField.text = string.Empty;
+        }
+
+        ResetSubmitState();
+        Debug.Log("[VirtualKeyboardHandler] Target set to: " + target.name);
     }
 }

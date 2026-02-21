@@ -5,6 +5,7 @@ public class SignInUI : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private TMP_InputField emailInputField;
+    [SerializeField] private VirtualKeyboardHandler keyboardHandler;
 
     [Header("Screens")]
     [SerializeField] private GameObject signInScreen;
@@ -13,6 +14,14 @@ public class SignInUI : MonoBehaviour
     [Header("Error UI")]
     [SerializeField] private TMP_Text errorText;
     [SerializeField] private string emptyEmailMessage = "user hasn't signed in";
+
+    private void OnEnable()
+    {
+        if (keyboardHandler != null && emailInputField != null)
+        {
+            keyboardHandler.SetTargetInputField(emailInputField);
+        }
+    }
 
     public void OnSignInClicked()
     {
@@ -30,6 +39,9 @@ public class SignInUI : MonoBehaviour
             ShowError(emptyEmailMessage);
             return;
         }
+
+        AppState.Instance.SetEmail(email);
+        Debug.Log("[SignInUI] AppState email now: " + AppState.Instance.User.email);
 
         if (signInScreen != null)
         {
