@@ -10,6 +10,10 @@ public sealed class AppState : MonoBehaviour
     public RoleState Role { get; private set; }
     public SessionDraft Session { get; private set; }
 
+    // Runtime-only mode flag (NOT persisted to JSON).
+    public DeviceMode CurrentDeviceMode { get; private set; } = DeviceMode.Mobile_AR;
+    public event Action<DeviceMode> DeviceModeChanged;
+
     // Single JSON file under Unity's persistent app data folder.
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, "app_state.json");
 
@@ -26,6 +30,18 @@ public sealed class AppState : MonoBehaviour
 
         InitializeDefaults();
         LoadFromDisk();
+    }
+
+    public void SetDeviceMode(DeviceMode mode)
+    {
+        if (CurrentDeviceMode == mode)
+        {
+            return;
+        }
+
+        CurrentDeviceMode = mode;
+        Debug.Log($"[AppState] Device mode set to: {mode}");
+        DeviceModeChanged?.Invoke(mode);
     }
 
     public void SetEmail(string email)
@@ -93,6 +109,7 @@ public sealed class AppState : MonoBehaviour
     public void SaveToDisk()
     {
         // Persist only plain serializable data (no MonoBehaviour references).
+        // CurrentDeviceMode intentionally omitted (runtime-only).
         var data = new AppStateData
         {
             user = User,

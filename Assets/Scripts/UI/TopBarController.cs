@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public sealed class TopBarController : MonoBehaviour
 {
+    private const string LogTag = "[TopBarController]";
+
     [Header("References")]
     [SerializeField] private BootRouter bootRouter;
     [SerializeField] private TMP_Text emailText;
@@ -102,12 +104,22 @@ public sealed class TopBarController : MonoBehaviour
         }
     }
 
-    private void OnSignOutClicked()
+    private async void OnSignOutClicked()
     {
         var appState = AppState.Instance;
         if (appState == null)
         {
             return;
+        }
+
+        var bootstrap = FusionBootstrap.GetOrCreate();
+        if (bootstrap != null)
+        {
+            await bootstrap.ShutdownRunnerAsync();
+        }
+        else
+        {
+            Debug.LogWarning($"{LogTag} Sign out continuing without FusionBootstrap instance.");
         }
 
         appState.SignOut();
@@ -119,12 +131,18 @@ public sealed class TopBarController : MonoBehaviour
         }
     }
 
-    private void OnLeaveClassClicked()
+    private async void OnLeaveClassClicked()
     {
         var appState = AppState.Instance;
         if (appState == null)
         {
             return;
+        }
+
+        var bootstrap = FusionBootstrap.GetOrCreate();
+        if (bootstrap != null)
+        {
+            await bootstrap.ShutdownRunnerAsync();
         }
 
         appState.ResetSession();
