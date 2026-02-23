@@ -316,7 +316,7 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         private void LateUpdate()
         {
             // Axis Slider
-            if (SliderEnabled)
+            if (SliderEnabled && InputFieldSlide != null && Camera.main != null)
             {
                 Vector3 nearPoint = Vector3.ProjectOnPlane(Camera.main.transform.forward, transform.forward);
                 Vector3 relPos = transform.InverseTransformPoint(nearPoint);
@@ -404,6 +404,13 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// </summary>
         public void PresentKeyboard()
         {
+            // In Mobile_AR mode, keep native TMP/InputSystem keyboard flow and skip MRTK keyboard takeover.
+            if (AppState.Instance != null && AppState.Instance.CurrentDeviceMode == DeviceMode.Mobile_AR)
+            {
+                Debug.Log("[NonNativeKeyboard] PresentKeyboard ignored in Mobile_AR mode.");
+                return;
+            }
+
             ResetClosingTime();
             gameObject.SetActive(true);
             ActivateSpecificKeyboard(LayoutType.Alpha);
@@ -492,6 +499,12 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// </summary>
         private void ScaleToSize()
         {
+            if (Camera.main == null)
+            {
+                Debug.LogWarning("[NonNativeKeyboard] Camera.main is null. Skipping keyboard scale update.");
+                return;
+            }
+
             float distance = (transform.position - Camera.main.transform.position).magnitude;
             float distancePercent = (distance - m_MinDistance) / (m_MaxDistance - m_MinDistance);
             float scale = m_MinScale + (m_MaxScale - m_MinScale) * distancePercent;
@@ -507,6 +520,12 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// </summary>
         private void LookAtTargetOrigin()
         {
+            if (Camera.main == null)
+            {
+                Debug.LogWarning("[NonNativeKeyboard] Camera.main is null. Skipping keyboard look-at.");
+                return;
+            }
+
             transform.LookAt(Camera.main.transform.position);
             transform.Rotate(Vector3.up, 180.0f);
         }
